@@ -1,10 +1,24 @@
+import { useEffect } from "react";
 import { useState } from "react";
 
 export const UseState = ({ name }) => {
   const [error, setError] = useState(true);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (loading) {
+      setTimeout(() => {
+        setLoading(false);
+      }, 2000);
+    }
+  }, [loading]);
 
   const handleError = () => {
     setError(!error);
+  };
+
+  const handleLoading = () => {
+    setLoading(true);
   };
 
   return (
@@ -14,6 +28,8 @@ export const UseState = ({ name }) => {
       <p className="xl">Por favor, escribe el código de seguridad.</p>
       {error && <p className="text-red-500">Error: el código es incorrecto</p>}
 
+      {loading && <p>Cargando...</p>}
+
       <input
         className="rounded-xl px-3"
         type="text"
@@ -21,7 +37,9 @@ export const UseState = ({ name }) => {
       />
       <button
         className="bg-blue-300 rounded-full py-1 px-3"
-        onClick={handleError}
+        onClick={() => {
+          handleError(), handleLoading();
+        }}
       >
         Comprobar
       </button>
