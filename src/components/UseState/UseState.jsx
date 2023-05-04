@@ -1,21 +1,26 @@
 import { useEffect } from "react";
 import { useState } from "react";
 
+const SECURITY_CODE = "paradigma";
+
 export const UseState = ({ name }) => {
-  const [error, setError] = useState(true);
-  const [loading, setLoading] = useState(true);
+  const [value, setValue] = useState("");
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  console.log(value);
 
   useEffect(() => {
     if (loading) {
+      setError(false);
       setTimeout(() => {
+        if (value !== SECURITY_CODE) {
+          setError(true);
+        }
         setLoading(false);
       }, 2000);
     }
   }, [loading]);
-
-  const handleError = () => {
-    setError(!error);
-  };
 
   const handleLoading = () => {
     setLoading(true);
@@ -26,7 +31,9 @@ export const UseState = ({ name }) => {
       <h2 className="text-2xl">Eliminar {name}</h2>
 
       <p className="xl">Por favor, escribe el código de seguridad.</p>
-      {error && <p className="text-red-500">Error: el código es incorrecto</p>}
+      {error && !loading && (
+        <p className="text-red-500">Error: el código es incorrecto</p>
+      )}
 
       {loading && <p>Cargando...</p>}
 
@@ -34,11 +41,15 @@ export const UseState = ({ name }) => {
         className="rounded-xl px-3"
         type="text"
         placeholder="Código de seguridad"
+        value={value}
+        onChange={(e) => {
+          setValue(e.target.value);
+        }}
       />
       <button
         className="bg-blue-300 rounded-full py-1 px-3"
         onClick={() => {
-          handleError(), handleLoading();
+          handleLoading();
         }}
       >
         Comprobar
